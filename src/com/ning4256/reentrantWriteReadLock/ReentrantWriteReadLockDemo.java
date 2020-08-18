@@ -1,4 +1,4 @@
-package com.ning4256;
+package com.ning4256.reentrantWriteReadLock;
 
 import java.util.HashMap;
 import java.util.Map;
