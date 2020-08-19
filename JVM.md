@@ -1,743 +1,519 @@
-# JUC核心知识点
-- [JMM](#jmm)
-- [volatile关键字](#volatile关键字)
-  - [可见性](#可见性)
-  - [原子性](#原子性)
-  - [有序性](#有序性)
-  - [哪些地方用到过volatile？](#哪些地方用到过volatile？)
-    - [单例模式的安全问题](#单例模式的安全问题)
-- [CAS](#cas)
-  - [CAS底层原理](#cas底层原理)
-  - [CAS缺点](#cas缺点)
-- [ABA问题](#aba问题)
-  - [AtomicReference](#atomicreference)
-  - [AtomicStampedReference和ABA问题的解决](#atomicstampedreference和aba问题的解决)
-- [集合类不安全问题](#集合类不安全问题)
-  - [List](#list)
-    - [CopyOnWriteArrayList](#copyonwritearraylist)
-  - [Set](#set)
-    - [HashSet和HashMap](#hashset和hashmap)
-  - [Map](#map)
-- [Java锁](#java锁)
-  - [公平锁/非公平锁](#公平锁非公平锁)
-  - [可重入锁/递归锁](#可重入锁递归锁)
-    - [锁的配对](#锁的配对)
-  - [自旋锁](#自旋锁)
-  - [读写锁/独占/共享锁](#读写锁独占共享锁)
-  - [Synchronized和Lock的区别](#synchronized和lock的区别)
-- [CountDownLatch/CyclicBarrier/Semaphore](#countdownlatchcyclicbarriersemaphore)
-  - [CountDownLatch](#countdownlatch)
-    - [枚举类的使用](#枚举类的使用)
-  - [CyclicBarrier](#cyclicbarrier)
-  - [Semaphore](#semaphore)
-- [阻塞队列](#阻塞队列)
-  - [SynchronousQueue](#synchronousqueue)
-- [Callable接口](#callable接口)
-- [阻塞队列的应用——生产者消费者](#阻塞队列的应用生产者消费者)
-  - [传统模式](#传统模式)
-  - [阻塞队列模式](#阻塞队列模式)
-- [阻塞队列的应用——线程池](#阻塞队列的应用线程池)
-  - [线程池基本概念](#线程池基本概念)
-  - [线程池三种常用创建方式](#线程池三种常用创建方式)
-  - [线程池创建的七个参数](#线程池创建的七个参数)
-  - [线程池底层原理](#线程池底层原理)
-  - [线程池的拒绝策略](#线程池的拒绝策略)
-  - [实际生产使用哪一个线程池？](#实际生产使用哪一个线程池？)
-    - [自定义线程池参数选择](#自定义线程池参数选择)
-- [死锁编码和定位](#死锁编码和定位)
+# JVM核心知识点
+- [Java8  JVM内存结构](#java8--jvm内存结构)
+- [GC Roots](#gc-roots)
+  - [如果判断一个对象可以被回收？](#如果判断一个对象可以被回收？)
+    - [引用计数算法](#引用计数算法)
+    - [可达性分析算法](#可达性分析算法)
+  - [哪些对象可以作为GC Roots？](#哪些对象可以作为gc-roots？)
+- [JVM参数](#jvm参数)
+  - [JVM 三种类型参数](#jvm-三种类型参数)
+    - [标配参数](#标配参数)
+    - [X参数](#x参数)
+    - [XX参数](#xx参数)
+  - [JVM XX参数](#jvm-xx参数)
+    - [布尔类型](#布尔类型)
+    - [KV键值类型](#kv键值类型)
+  - [JVM Xms/Xmx参数](#jvm-xmsxmx参数)
+  - [JVM 查看参数](#jvm-查看参数)
+    - [查看某个参数](#查看某个参数)
+    - [查看所有参数](#查看所有参数)
+    - [查看修改后的参数](#查看修改后的参数)
+    - [查看常见参数](#查看常见参数)
+  - [JVM 常用参数](#jvm-常用参数)
+    - [-Xmx/-Xms](#-xmx-xms)
+    - [-Xss](#-xss)
+    - [-Xmn](#-xmn)
+    - [-XX:MetaspaceSize](#-xxmetaspacesize)
+    - [-XX:+PrintGCDetails](#-xxprintgcdetails)
+    - [-XX:SurvivorRatio](#-xxsurvivorratio)
+    - [-XX:NewRatio](#-xxnewratio)
+    - [-XX:MaxTenuringThreshold](#-xxmaxtenuringthreshold)
+- [四大引用](#四大引用)
+  - [强引用](#强引用)
+  - [软引用](#软引用)
+  - [弱引用](#弱引用)
+    - [WeakHashMap](#weakhashmap)
+  - [虚引用](#虚引用)
+  - [引用队列](#引用队列)
+- [OutOfMemoryError](#outofmemoryerror)
+  - [StackOverflowError](#stackoverflowerror)
+  - [OOM—Java head space](#oomjava-head-space)
+  - [OOM—GC overhead limit exceeded](#oomgc-overhead-limit-exceeded)
+  - [OOM—GC Direct buffer memory](#oomgc-direct-buffer-memory)
+  - [OOM—unable to create new native thread](#oomunable-to-create-new-native-thread)
+  - [OOM—Metaspace](#oommetaspace)
+- [JVM垃圾收集器](#jvm垃圾收集器)
+  - [四大垃圾收集算法](#四大垃圾收集算法)
+    - [标记整理](#标记整理)
+    - [标记清除](#标记清除)
+    - [复制算法](#复制算法)
+    - [分代收集算法](#分代收集算法)
+  - [四种垃圾收集器](#四种垃圾收集器)
+    - [串行收集器Serial](#串行收集器serial)
+    - [并行收集器Parrallel](#并行收集器parrallel)
+    - [并发收集器CMS](#并发收集器cms)
+    - [G1收集器](#g1收集器)
+  - [默认垃圾收集器](#默认垃圾收集器)
+    - [默认收集器有哪些？](#默认收集器有哪些？)
+    - [查看默认垃圾修改器](#查看默认垃圾修改器)
+  - [七大垃圾收集器](#七大垃圾收集器)
+    - [体系结构](#体系结构)
+    - [Serial收集器](#serial收集器)
+    - [ParNew收集器](#parnew收集器)
+    - [Parallel Scavenge收集器](#parallel-scavenge收集器)
+    - [SerialOld收集器](#serialold收集器)
+    - [ParallelOld收集器](#parallelold收集器)
+    - [CMS收集器](#cms收集器)
+      - [过程](#过程)
+      - [优缺点](#优缺点)
+    - [G1收集器](#g1收集器-1)
+      - [特点](#特点)
+      - [过程](#过程-1)
+- [附—Linux相关指令](#附linux相关指令)
+  - [top](#top)
+  - [vmstat](#vmstat)
+  - [pidstat](#pidstat)
+  - [free](#free)
+  - [df](#df)
+  - [iostat](#iostat)
+  - [ifstat](#ifstat)
+- [CPU占用过高原因定位](#cpu占用过高原因定位)
+- [JVM性能调优和监控工具](#jvm性能调优和监控工具)
+  - [jps](#jps)
+  - [jstack](#jstack)
+  - [jinfo/jstat](#jinfojstat)
+  - [jmap](#jmap)
 
-# JMM
+# Java8  JVM内存结构
 
-JMM是指Java**内存模型**，不是Java**内存布局**，不是所谓的栈、堆、方法区。
+基本结构与之前类似，只是Java8取消了之前的“永久代”，取而代之的是“元空间”——**Metaspace**，两者本质是一样的。“永久代”使用的是JVM的堆内存，而“元空间”是直接使用的本机物理内存。
 
-每个Java线程都有自己的**工作内存**。操作数据，首先从主内存中读，得到一份拷贝，操作完毕后再写回到主内存。
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/JVMMem.png)
 
-![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/JMM.png)
+# GC Roots
 
-JMM可能带来**可见性**、**原子性**和**有序性**问题。所谓可见性，就是某个线程对主内存内容的更改，应该立刻通知到其它线程。原子性是指一个操作是不可分割的，不能执行到一半，就不执行了。所谓有序性，就是指令是有序的，不会被重排。
+## 如果判断一个对象可以被回收？
 
-# volatile关键字
+### 引用计数算法
 
-`volatile`关键字是Java提供的一种**轻量级**同步机制。它能够保证**可见性**和**有序性**，但是不能保证**原子性**。
+维护一个计数器，如果有对该对象的引用，计数器+1，反之-1。无法解决循环引用的问题。
 
-## 可见性
+### 可达性分析算法
 
-[可见性测试](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/VolatileDemo.java)
+从一组名为“GC Roots”的根节点对象出发，向下遍历。那些没有被遍历到、与GC Roots形成通路的对象，会被标记为“回收”。
 
-```java
-class MyData{
-    int number=0;
-    //volatile int number=0;
+## 哪些对象可以作为GC Roots？
 
-    AtomicInteger atomicInteger=new AtomicInteger();
-    public void setTo60(){
-        this.number=60;
-    }
+1. 虚拟机栈（栈帧中的局部变量）中引用的对象。
+2. 本地方法栈（native）中引用的对象。
+3. 方法区中常量引用的对象。
+4. 方法区中类静态属性引用的对象。
 
-    //此时number前面已经加了volatile，但是不保证原子性
-    public void addPlusPlus(){
-        number++;
-    }
+# JVM参数
 
-    public void addAtomic(){
-        atomicInteger.getAndIncrement();
-    }
-}
+## JVM 三种类型参数
 
-//volatile可以保证可见性，及时通知其它线程主物理内存的值已被修改
-private static void volatileVisibilityDemo() {
-    System.out.println("可见性测试");
-    MyData myData=new MyData();//资源类
-    //启动一个线程操作共享数据
-    new Thread(()->{
-        System.out.println(Thread.currentThread().getName()+"\t come in");
-        try {TimeUnit.SECONDS.sleep(3);myData.setTo60();
-        System.out.println(Thread.currentThread().getName()+"\t update number value: "+myData.number);}catch (InterruptedException e){e.printStackTrace();}
-    },"AAA").start();
-    while (myData.number==0){
-     //main线程持有共享数据的拷贝，一直为0
-    }
-    System.out.println(Thread.currentThread().getName()+"\t mission is over. main get number value: "+myData.number);
-}
-```
+### 标配参数
 
-`MyData`类是资源类，一开始number变量没有用volatile修饰，所以程序运行的结果是：
+比如`-version`、`-help`、`-showversion`等，几乎不会改变。
 
-```java
-可见性测试
-AAA	 come in
-AAA	 update number value: 60
-```
+### X参数
 
-虽然一个线程把number修改成了60，但是main线程持有的仍然是最开始的0，所以一直循环，程序不会结束。
+用得不多，比如`-Xint`，解释执行模式；`-Xcomp`，编译模式；`-Xmixed`，开启混合模式（默认）。
 
-如果对number添加了volatile修饰，运行结果是：
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/InkedJVMXParam_LI.jpg)
 
-```java
-AAA	 come in
-AAA	 update number value: 60
-main	 mission is over. main get number value: 60
-```
+### XX参数
 
-可见某个线程对number的修改，会立刻反映到主内存上。
+重要，用于JVM调优。
 
-## 原子性
+## JVM XX参数
 
-volatile并**不能保证操作的原子性**。这是因为，比如一条number++的操作，会形成3条指令。
+### 布尔类型
 
-```assembly
-getfield        //读
-iconst_1	//++常量1
-iadd		//加操作
-putfield	//写操作
-```
+**公式**：`-XX:+某个属性`、`-XX:-某个属性`，开启或关闭某个功能。比如`-XX:+PrintGCDetails`，开启GC详细信息。
 
-假设有3个线程，分别执行number++，都先从主内存中拿到最开始的值，number=0，然后三个线程分别进行操作。假设线程0执行完毕，number=1，也立刻通知到了其它线程，但是此时线程1、2已经拿到了number=0，所以结果就是写覆盖，线程1、2将number变成1。
+### KV键值类型
 
-解决的方式就是：
+**公式**：`-XX:属性key=值value`。比如`-XX:Metaspace=128m`、`-XX:MaxTenuringThreshold=15`。
 
-1. 对`addPlusPlus()`方法加锁。
-2. 使用`java.util.concurrent.AtomicInteger`类。
+## JVM Xms/Xmx参数
 
-```java
-private static void atomicDemo() {
-    System.out.println("原子性测试");
-    MyData myData=new MyData();
-    for (int i = 1; i <= 20; i++) {
-        new Thread(()->{
-            for (int j = 0; j <1000 ; j++) {
-                myData.addPlusPlus();
-                myData.addAtomic();
-            }
-        },String.valueOf(i)).start();
-    }
-    while (Thread.activeCount()>2){
-        Thread.yield();
-    }
-    System.out.println(Thread.currentThread().getName()+"\t int type finally number value: "+myData.number);
-    System.out.println(Thread.currentThread().getName()+"\t AtomicInteger type finally number value: "+myData.atomicInteger);
-}
-```
+`-Xms`和`-Xmx`十分常见，用于设置**初始堆大小**和**最大堆大小**。第一眼看上去，既不像X参数，也不像XX参数。实际上`-Xms`等价于`-XX:InitialHeapSize`，`-Xmx`等价于`-XX:MaxHeapSize`。所以`-Xms`和`-Xmx`属于XX参数。
 
-结果：可见，由于`volatile`不能保证原子性，出现了线程重复写的问题，最终结果比20000小。而`AtomicInteger`可以保证原子性。
+## JVM 查看参数
+
+### 查看某个参数
+
+使用`jps -l`配合`jinfo -flag JVM参数 pid` 。先用`jsp -l`查看java进程，选择某个进程号。
 
 ```java
-原子性测试
-main	 int type finally number value: 17542
-main	 AtomicInteger type finally number value: 20000
+17888 org.jetbrains.jps.cmdline.Launcher
+5360 org.jetbrains.idea.maven.server.RemoteMavenServer
+18052 demo3.demo3
 ```
 
-## 有序性
-
-[有序性案例](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/ResortSeqDemo.java)
-
-volatile可以保证**有序性**，也就是防止**指令重排序**。所谓指令重排序，就是出于优化考虑，CPU执行指令的顺序跟程序员自己编写的顺序不一致。就好比一份试卷，题号是老师规定的，是程序员规定的，但是考生（CPU）可以先做选择，也可以先做填空。
+`jinfo -flag PrintGCDetails 18052`可以查看18052 Java进程的`PrintGCDetails`参数信息。
 
 ```java
-int x = 11; //语句1
-int y = 12; //语句2
-x = x + 5;  //语句3
-y = x * x;  //语句4
+-XX:-PrintGCDetails
 ```
 
-以上例子，可能出现的执行顺序有1234、2134、1342，这三个都没有问题，最终结果都是x = 16，y=256。但是如果是4开头，就有问题了，y=0。这个时候就**不需要**指令重排序。
+### 查看**所有**参数
 
-volatile底层是用CPU的**内存屏障**（Memory Barrier）指令来实现的，有两个作用，一个是保证特定操作的顺序性，二是保证变量的可见性。在指令之间插入一条Memory Barrier指令，告诉编译器和CPU，在Memory Barrier指令之间的指令不能被重排序。
+使用`jps -l`配合`jinfo -flags pid`可以查看所有参数。
 
-## 哪些地方用到过volatile？
-
-### 单例模式的安全问题
-
-常见的DCL（Double Check Lock）模式虽然加了同步，但是在多线程下依然会有线程安全问题。
+也可以使用`java -XX:+PrintFlagsInitial`
 
 ```java
-public class SingletonDemo {
-    private static SingletonDemo singletonDemo=null;
-    private SingletonDemo(){
-        System.out.println(Thread.currentThread().getName()+"\t 我是构造方法");
-    }
-    //DCL模式 Double Check Lock 双端检索机制：在加锁前后都进行判断
-    public static SingletonDemo getInstance(){
-        if (singletonDemo==null){
-            synchronized (SingletonDemo.class){
-                 if (singletonDemo==null){
-                     singletonDemo=new SingletonDemo();
-                 }
-            }
-        }
-        return singletonDemo;
-    }
+[Global flags]
+     intx ActiveProcessorCount                      = -1            {product}
+    uintx AdaptiveSizeDecrementScaleFactor          = 4             {product}
+    uintx AdaptiveSizeMajorGCDecayTimeScale         = 10            {product}
+    uintx AdaptiveSizePausePolicy                   = 0             {product}
+······
+    uintx YoungPLABSize                             = 4096          {product}
+     bool ZeroTLAB                                  = false         {product}
+     intx hashCode                                  = 5             {product}
 
-    public static void main(String[] args) {
-        for (int i = 0; i < 10; i++) {
-            new Thread(()->{
-                SingletonDemo.getInstance();
-            },String.valueOf(i+1)).start();
-        }
-    }
-}
 ```
 
-这个漏洞比较tricky，很难捕捉，但是是存在的。`instance=new SingletonDemo();`可以大致分为三步
+### 查看**修改**后的参数
+
+使用`java -XX:PrintFlagsFinal`可以查看修改后的参数，与上面类似。只是修改过后是`:=`而不是`=`。
+
+### 查看**常见**参数
+
+如果不想查看所有参数，可以用`-XX:+PrintCommandLineFlags`查看常用参数。
 
 ```java
-memory = allocate();     //1.分配内存
-instance(memory);	 //2.初始化对象
-instance = memory;	 //3.设置引用地址
+-XX:InitialHeapSize=132375936 -XX:MaxHeapSize=2118014976 -XX:+PrintCommandLineFlags -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:-UseLargePagesIndividualAllocation -XX:+UseParallelGC
 ```
 
-其中2、3没有数据依赖关系，**可能发生重排**。如果发生，此时内存已经分配，那么`instance=memory`不为null。如果此时线程挂起，`instance(memory)`还未执行，对象还未初始化。由于`instance!=null`，所以两次判断都跳过，最后返回的`instance`没有任何内容，还没初始化。
+## JVM 常用参数
 
-解决的方法就是对`singletondemo`对象添加上`volatile`关键字，禁止指令重排。
+### -Xmx/-Xms
 
-# CAS
+最大和初始堆大小。最大默认为物理内存的1/4，初始默认为物理内存的1/64。
 
-CAS是指**Compare And Swap**，**比较并交换**，是一种很重要的同步思想。如果主内存的值跟期望值一样，那么就进行修改，否则一直重试，直到一致为止。
+### -Xss
+
+等价于`-XX:ThresholdStackSize`。用于设置单个栈的大小，系统默认值是0，**不代表栈大小为0**。而是根据操作系统的不同，有不同的值。比如64位的Linux系统是1024K，而Windows系统依赖于虚拟内存。
+
+### -Xmn
+
+新生代大小，一般不调。
+
+### -XX:MetaspaceSize
+
+设置元空间大小。
+
+### -XX:+PrintGCDetails
+
+输出GC收集信息，包含`GC`和`Full GC`信息。
+
+### -XX:SurvivorRatio
+
+新生代中，`Eden`区和两个`Survivor`区的比例，默认是`8:1:1`。通过`-XX:SurvivorRatio=4`改成`4:1:1`
+
+### -XX:NewRatio
+
+老生代和新年代的比列，默认是2，即老年代占2，新生代占1。如果改成`-XX:NewRatio=4`，则老年代占4，新生代占1。
+
+### -XX:MaxTenuringThreshold
+
+新生代设置进入老年代的时间，默认是新生代逃过15次GC后，进入老年代。如果改成0，那么对象不会在新生代分配，直接进入老年代。
+
+# 四大引用
+
+以下Demo都需要设置`-Xmx`和`-Xms`，不然系统默认很大，很难演示。
+
+## 强引用
+
+使用`new`方法创造出来的对象，默认都是强引用。GC的时候，就算**内存不够**，抛出`OutOfMemoryError`也不会回收对象，**死了也不回收**。详见[StrongReferenceDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/jvm/StrongReferenceDemo.java)。
+
+## 软引用
+
+需要用`Object.Reference.SoftReference`来显示创建。**如果内存够**，GC的时候**不回收**。**内存不够**，**则回收**。常用于内存敏感的应用，比如高速缓存。详见[SoftReferenceDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/jvm/SoftReferenceDemo.java)。
+
+## 弱引用
+
+需要用`Object.Reference.WeakReference`来显示创建。**无论内存够不够，GC的时候都回收**，也可以用在高速缓存上。详见[WeakReferenceDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/jvm/WeakReferenceDemo.java)
+
+### WeakHashMap
+
+传统的`HashMap`就算`key==null`了，也不会回收键值对。但是如果是`WeakHashMap`，一旦内存不够用时，且`key==null`时，会回收这个键值对。详见[WeakHashMapDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/jvm/WeakHashMapDemo.java)。
+
+## 虚引用
+
+软应用和弱引用可以通过`get()`方法获得对象，但是虚引用不行。虚引形同虚设，在任何时候都可能被GC，不能单独使用，必须配合**引用队列（ReferenceQueue）**来使用。设置虚引用的**唯一目的**，就是在这个对象被回收时，收到一个**通知**以便进行后续操作，有点像`Spring`的后置通知。详见[PhantomReferenceDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/jvm/PhantomReferenceDemo.java)。
+
+## 引用队列
+
+弱引用、虚引用被回收后，会被放到引用队列里面，通过`poll`方法可以得到。关于引用队列和弱、虚引用的配合使用，见[ReferenceQueueDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/jvm/ReferenceQueueDemo.java)。
+
+# OutOfMemoryError
+
+## StackOverflowError
+
+栈满会抛出该错误。无限递归就会导致StackOverflowError，是`java.lang.Throwable`→`java.lang.Error`→`java.lang.VirtualMachineError`下的错误。详见[StackOverflowErrorDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/jvm/StackOverflowErrorDemo.java)。
+
+## OOM—Java head space
+
+栈满会抛出该错误。详见[JavaHeapSpaceDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/jvm/JavaHeapSpaceDemo.java)。
+
+## OOM—GC overhead limit exceeded
+
+这个错误是指：GC的时候会有“Stop the World"，STW越小越好，正常情况是GC只会占到很少一部分时间。但是如果用超过98%的时间来做GC，而且收效甚微，就会被JVM叫停。下例中，执行了多次`Full GC`，但是内存回收很少，最后抛出了`OOM:GC overhead limit exceeded`错误。详见[GCOverheadDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/jvm/GCOverheadDemo.java)。
 
 ```java
-public class CASDemo {
-    public static void main(String[] args) {
-        AtomicInteger atomicInteger=new AtomicInteger(5);
-        System.out.println(atomicInteger.compareAndSet(5, 2019)+"\t current data : "+ atomicInteger.get());
-        //修改失败
-        System.out.println(atomicInteger.compareAndSet(5, 1024)+"\t current data : "+ atomicInteger.get());
-    }
-}
+[GC (Allocation Failure) [PSYoungGen: 2048K->496K(2560K)] 2048K->960K(9728K), 0.0036555 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+[GC (Allocation Failure) [PSYoungGen: 2544K->489K(2560K)] 3008K->2689K(9728K), 0.0060306 secs] [Times: user=0.08 sys=0.00, real=0.01 secs] 
+[GC (Allocation Failure) [PSYoungGen: 2537K->512K(2560K)] 4737K->4565K(9728K), 0.0050620 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+[GC (Allocation Failure) [PSYoungGen: 2560K->496K(2560K)] 6613K->6638K(9728K), 0.0064025 secs] [Times: user=0.00 sys=0.00, real=0.01 secs] 
+
+[Full GC (Ergonomics) [PSYoungGen: 2048K->860K(2560K)] [ParOldGen: 6264K->7008K(7168K)] 8312K->7869K(9728K), [Metaspace: 3223K->3223K(1056768K)], 0.1674947 secs] [Times: user=0.63 sys=0.00, real=0.17 secs] 
+[Full GC (Ergonomics) [PSYoungGen: 2048K->2006K(2560K)] [ParOldGen: 7008K->7008K(7168K)] 9056K->9015K(9728K), [Metaspace: 3224K->3224K(1056768K)], 0.1048666 secs] [Times: user=0.45 sys=0.00, real=0.10 secs] 
+[Full GC (Ergonomics) [PSYoungGen: 2047K->2047K(2560K)] [ParOldGen: 7082K->7082K(7168K)] 9130K->9130K(9728K), [Metaspace: 3313K->3313K(1056768K)], 0.0742516 secs] [Times: user=0.28 sys=0.00, real=0.07 secs] 
+
+·······
+
+[Full GC (Ergonomics) [PSYoungGen: 2047K->2047K(2560K)] [ParOldGen: 7084K->7084K(7168K)] 9132K->9132K(9728K), [Metaspace: 3313K->3313K(1056768K)], 0.0738461 secs] [Times: user=0.36 sys=0.02, real=0.07 secs] 
+
+Exception in thread "main" [Full GC (Ergonomics) [PSYoungGen: 2047K->0K(2560K)] [ParOldGen: 7119K->647K(7168K)] 9167K->647K(9728K), [Metaspace: 3360K->3360K(1056768K)], 0.0129597 secs] [Times: user=0.11 sys=0.00, real=0.01 secs] 
+java.lang.OutOfMemoryError: GC overhead limit exceeded
+	at java.lang.Integer.toString(Integer.java:401)
+	at java.lang.String.valueOf(String.java:3099)
+	at jvm.GCOverheadDemo.main(GCOverheadDemo.java:12)
 ```
 
-第一次修改，期望值为5，主内存也为5，修改成功，为2019。第二次修改，期望值为5，主内存为2019，修改失败。
+## OOM—GC Direct buffer memory
 
-查看`AtomicInteger.getAndIncrement()`方法，发现其没有加`synchronized`**也实现了同步**。这是为什么？
+在写`NIO`程序的时候，会用到`ByteBuffer`来读取和存入数据。与Java堆的数据不一样，`ByteBuffer`使用`native`方法，直接在**堆外分配内存**。当堆外内存（也即本地物理内存）不够时，就会抛出这个异常。详见[DirectBufferMemoryDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/jvm/DirectBufferMemoryDemo.java)。
 
-## CAS底层原理
+## OOM—unable to create new native thread
 
-`AtomicInteger`内部维护了`volatile int value`和`private  static final Unsafe unsafe`两个比较重要的参数。
+在高并发应用场景时，如果创建超过了系统默认的最大线程数，就会抛出该异常。Linux单个进程默认不能超过1024个线程。**解决方法**要么降低程序线程数，要么修改系统最大线程数`vim /etc/security/limits.d/90-nproc.conf`。详见[UnableCreateNewThreadDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/jvm/UnableCreateNewThreadDemo.java)
+
+## OOM—Metaspace
+
+元空间满了就会抛出这个异常。
+
+# JVM垃圾收集器
+
+## 四大垃圾收集算法
+
+### 标记整理
+
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/GCbq.png)
+
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/GCbz.png)
+
+### 标记清除
+
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/GCbq.png)
+
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/GCbq2.png)
+
+### 复制算法
+
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/GCfz.png)
+
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/GCfz2.png)
+
+### 分代收集算法
+
+准确来讲，跟前面三种算法有所区别。分代收集算法就是根据对象的年代，采用上述三种算法来收集。
+
+1. 对于新生代：每次GC都有大量对象死去，存活的很少，常采用复制算法，只需要拷贝很少的对象。
+2. 对于老年代：常采用标整或者标清算法。
+
+## 四种垃圾收集器
+
+Java 8可以将垃圾收集器分为四类。
+
+### 串行收集器Serial
+
+为单线程环境设计且**只使用一个线程**进行GC，会暂停所有用户线程，不适用于服务器。就像去餐厅吃饭，只有一个清洁工在打扫。
+
+### 并行收集器Parrallel
+
+使用**多个线程**并行地进行GC，会暂停所有用户线程，适用于科学计算、大数据后台，交互性不敏感的场合。多个清洁工同时在打扫。
+
+### 并发收集器CMS
+
+用户线程和GC线程同时执行（不一定是并行，交替执行），GC时不需要停顿用户线程，互联网公司多用，适用对响应时间有要求的场合。清洁工打扫的时候，也可以就餐。
+
+### G1收集器
+
+对内存的划分与前面3种很大不同，将堆内存分割成不同的区域，然后并发地进行垃圾回收。
+
+## 默认垃圾收集器
+
+### 默认收集器有哪些？
+
+有`Serial`、`Parallel`、`ConcMarkSweep`（CMS）、`ParNew`、`ParallelOld`、`G1`。还有一个`SerialOld`，快被淘汰了。
+
+### 查看默认垃圾修改器
+
+使用`java -XX:+PrintCommandLineFlags`即可看到，Java 8默认使用`-XX:+UseParallelGC`。
 
 ```java
-public final int getAndIncrement(){
-    return unsafe.getAndAddInt(this,valueOffset,1);
-}
+-XX:InitialHeapSize=132375936 -XX:MaxHeapSize=2118014976 -XX:+PrintCommandLineFlags -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:-UseLargePagesIndividualAllocation -XX:+UseParallelGC
 ```
 
-`AtomicInteger.getAndIncrement()`调用了`Unsafe.getAndAddInt()`方法。`Unsafe`类的大部分方法都是`native`的，用来像C语言一样从底层操作内存。
+## 七大垃圾收集器
 
-```java
-public final int getAnddAddInt(Object var1,long var2,int var4){
-    int var5;
-    do{
-        var5 = this.getIntVolatile(var1, var2);
-    } while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));
-    return var5;
-}
+### 体系结构
+
+`Serial`、`Parallel Scavenge`、`ParNew`用户回收新生代；`SerialOld`、`ParallelOld`、`CMS`用于回收老年代。而`G1`收集器，既可以回收新生代，也可以回收老年代。
+
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/GCqi.png)
+
+连线表示可以搭配使用，红叉表示不推荐一同使用，比如新生代用`Serial`，老年代用`CMS`。
+
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/GCqi2.png)
+
+
+
+### Serial收集器
+
+年代最久远，是`Client VM`模式下的默认新生代收集器，使用**复制算法**。**优点**：单个线程收集，没有线程切换开销，拥有最高的单线程GC效率。**缺点**：收集的时候会暂停用户线程。
+
+使用`-XX:+UseSerialGC`可以显式开启，开启后默认使用`Serial`+`SerialOld`的组合。
+
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/serial.jpeg)
+
+### ParNew收集器
+
+也就是`Serial`的多线程版本，GC的时候不再是一个线程，而是多个，是`Server VM`模式下的默认新生代收集器，采用**复制算法**。
+
+使用`-XX:+UseParNewGC`可以显式开启，开启后默认使用`ParNew`+`SerialOld`的组合。但是由于`SerialOld`已经过时，所以建议配合`CMS`使用。
+
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/parnew.jpeg)
+
+### Parallel Scavenge收集器
+
+`ParNew`收集器仅在新生代使用多线程收集，老年代默认是`SerialOld`，所以是单线程收集。而`Parallel Scavenge`在新、老两代都采用多线程收集。`Parallel Scavenge`还有一个特点就是**吞吐量优先收集器**，可以通过自适应调节，保证最大吞吐量。采用**复制算法**。
+
+使用`-XX:+UseParallelGC`可以开启， 同时也会使用`ParallelOld`收集老年代。其它参数，比如`-XX:ParallelGCThreads=N`可以选择N个线程进行GC，`-XX:+UseAdaptiveSizePolicy`使用自适应调节策略。
+
+### SerialOld收集器
+
+`Serial`的老年代版本，采用**标整算法**。JDK1.5之前跟`Parallel Scavenge`配合使用，现在已经不了，作为`CMS`的后备收集器。
+
+### ParallelOld收集器
+
+`Parallel`的老年代版本，JDK1.6之前，新生代用`Parallel`而老年代用`SerialOld`，只能保证新生代的吞吐量。JDK1.8后，老年代改用`ParallelOld`。
+
+使用`-XX:+UseParallelOldGC`可以开启， 同时也会使用`Parallel`收集新生代。
+
+### CMS收集器
+
+并发标记清除收集器，是一种以获得**最短GC停顿为**目标的收集器。适用在互联网或者B/S系统的服务器上，这类应用尤其重视服务器的**响应速度**，希望停顿时间最短。是`G1`收集器出来之前的首选收集器。使用**标清算法**。在GC的时候，会与用户线程并发执行，不会停顿用户线程。但是在**标记**的时候，仍然会**STW**。
+
+使用`-XX:+UseConcMarkSweepGC`开启。开启过后，新生代默认使用`ParNew`，同时老年代使用`SerialOld`作为备用。
+
+![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/cms.jpeg)
+
+#### 过程
+
+1. **初始标记**：只是标记一下GC Roots能直接关联的对象，速度很快，需要**STW**。
+2. **并发标记**：主要标记过程，标记全部对象，和用户线程一起工作，不需要STW。
+3. **重新标记**：修正在并发标记阶段出现的变动，需要**STW**。
+4. **并发清除**：和用户线程一起，清除垃圾，不需要STW。
+
+#### 优缺点
+
+**优点**：停顿时间少，响应速度快，用户体验好。
+
+**缺点**：
+
+1. 对CPU资源非常敏感：由于需要并发工作，多少会占用系统线程资源。
+2. 无法处理浮动垃圾：由于标记垃圾的时候，用户进程仍然在运行，无法有效处理新产生的垃圾。
+3. 产生内存碎片：由于使用**标清算法**，会产生内存碎片。
+
+### G1收集器
+
+`G1`收集器与之前垃圾收集器的一个显著区别就是——之前收集器都有三个区域，新、老两代和元空间。而G1收集器只有G1区和元空间。而G1区，不像之前的收集器，分为新、老两代，而是一个一个Region，每个Region既可能包含新生代，也可能包含老年代。
+
+`G1`收集器既可以提高吞吐量，又可以减少GC时间。最重要的是**STW可控**，增加了预测机制，让用户指定停顿时间。
+
+使用`-XX:+UseG1GC`开启，还有`-XX:G1HeapRegionSize=n`、`-XX:MaxGCPauseMillis=n`等参数可调。
+
+#### 特点
+
+1. **并行和并发**：充分利用多核、多线程CPU，尽量缩短STW。
+2. **分代收集**：虽然还保留着新、老两代的概念，但物理上不再隔离，而是融合在Region中。
+3. **空间整合**：`G1`整体上看是**标整**算法，在局部看又是**复制算法**，不会产生内存碎片。
+4. **可预测停顿**：用户可以指定一个GC停顿时间，`G1`收集器会尽量满足。
+
+#### 过程
+
+与`CMS`类似。
+
+1. 初始标记。
+2. 并发标记。
+3. 最终标记。
+4. 筛选回收。
+
+# 附—Linux相关指令
+
+## top
+
+主要查看`%CPU`、`%MEM`，还有`load average`。`load average`后面的三个数字，表示系统1分钟、5分钟、15分钟的平均负载值。如果三者平均值高于0.6，则复杂比较高了。当然，用`uptime`也可以查看。
+
+## vmstat
+
+查看进程、内存、I/O等多个系统运行状态。2表示每两秒采样一次，3表示一共采样3次。`procs`的`r`表示运行和等待CPU时间片的进程数，原则上1核CPU不要超过2。`b`是等待资源的进程数，比如磁盘I/O、网络I/O等。
+
+```shell
+[root@ ~]# vmstat -n 2 3
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 2  0      0 173188 239748 1362628    0    0     0     3   17    8  0  0 99  0  0
+ 0  0      0 172800 239748 1362636    0    0     0     0  194  485  1  1 99  0  0
+ 1  0      0 172800 239748 1362640    0    0     0     0  192  421  1  1 99  0  0
 ```
 
-这个方法的var1和var2，就是根据**对象**和**偏移量**得到在**主内存的快照值**var5。然后`compareAndSwapInt`方法通过var1和var2得到当前**主内存的实际值**。如果这个**实际值**跟**快照值**相等，那么就更新主内存的值为var5+var4。如果不等，那么就一直循环，一直获取快照，一直对比，直到实际值和快照值相等为止。
+## pidstat
 
-比如有A、B两个线程，一开始都从主内存中拷贝了原值为3，A线程执行到`var5=this.getIntVolatile`，即var5=3。此时A线程挂起，B修改原值为4，B线程执行完毕，由于加了volatile，所以这个修改是立即可见的。A线程被唤醒，执行`this.compareAndSwapInt()`方法，发现这个时候主内存的值不等于快照值3，所以继续循环，**重新**从主内存获取。
+查看某个进程的运行信息。
 
-## CAS缺点
+## free
 
-CAS实际上是一种自旋锁，
+查看内存信息。
 
-1. 一直循环，开销比较大。
-2. 只能保证一个变量的原子操作，多个变量依然要加锁。
-3. 引出了**ABA问题**。
+## df
 
-# ABA问题
+查看磁盘信息。
 
-所谓ABA问题，就是比较并交换的循环，存在一个**时间差**，而这个时间差可能带来意想不到的问题。比如线程T1将值从A改为B，然后又从B改为A。线程T2看到的就是A，但是**却不知道这个A发生了更改**。尽管线程T2 CAS操作成功，但不代表就没有问题。
-有的需求，比如CAS，**只注重头和尾**，只要首尾一致就接受。但是有的需求，还看重过程，中间不能发生任何修改，这就引出了`AtomicReference`原子引用。
+## iostat
 
-## AtomicReference
+查看磁盘I/O信息。比如有时候MySQL在查表的时候，会占用大量磁盘I/O，体现在该指令的`%util`字段很大。对于死循环的程序，CPU占用固然很高，但是磁盘I/O不高。
 
-`AtomicInteger`对整数进行原子操作，如果是一个POJO呢？可以用`AtomicReference`来包装这个POJO，使其操作原子化。
+## ifstat
 
-```java
-User user1 = new User("Jack",25);
-User user2 = new User("Lucy",21);
-AtomicReference<User> atomicReference = new AtomicReference<>();
-atomicReference.set(user1);
-System.out.println(atomicReference.compareAndSet(user1,user2)); // true
-System.out.println(atomicReference.compareAndSet(user1,user2)); //false
-```
+查看网络I/O信息，需要安装。
 
-## AtomicStampedReference和ABA问题的解决
+# CPU占用过高原因定位
 
-使用`AtomicStampedReference`类可以解决ABA问题。这个类维护了一个“**版本号**”Stamp，在进行CAS操作的时候，不仅要比较当前值，还要比较**版本号**。只有两者都相等，才执行更新操作。
+先用`top`找到CPU占用最高的进程，然后用`ps -mp pid -o THREAD,tid,time`，得到该**进程**里面占用最高的**线程**。这个线程是10进制的，将其转成16进制，然后用`jstack pid | grep tid`可以定位到具体哪一行导致了占用过高。
 
-```java
-AtomicStampedReference.compareAndSet(expectedReference,newReference,oldStamp,newStamp);
-```
+# JVM性能调优和监控工具
 
-详见[ABADemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/ABADemo.java)。
+## jps
 
-# 集合类不安全问题
+Java版的`ps -ef`查看所有JVM进程。
 
-## List
+## jstack
 
-`ArrayList`不是线程安全类，在多线程同时写的情况下，会抛出`java.util.ConcurrentModificationException`异常。
+查看JVM中运行线程的状态，比较重要。可以定位CPU占用过高位置，定位死锁位置。
 
-```java
-private static void listNotSafe() {
-    List<String> list=new ArrayList<>();
-    for (int i = 1; i <= 30; i++) {
-        new Thread(() -> {
-            list.add(UUID.randomUUID().toString().substring(0, 8));
-            System.out.println(Thread.currentThread().getName() + "\t" + list);
-        }, String.valueOf(i)).start();
-    }
-}
-```
+## jinfo/jstat
 
-**解决方法**：
+`jinfo`查看JVM的运行环境参数，比如默认的JVM参数等。`jstat`统计信息监视工具。
 
-1. 使用`Vector`（`ArrayList`所有方法加`synchronized`，太重）。
-2. 使用`Collections.synchronizedList()`转换成线程安全类。
-3. 使用`java.concurrent.CopyOnWriteArrayList`（推荐）。
+## jmap
 
-### CopyOnWriteArrayList
-
-这是JUC的类，通过**写时复制**来实现**读写分离**。比如其`add()`方法，就是先**复制**一个新数组，长度为原数组长度+1，然后将新数组最后一个元素设为添加的元素。
-
-```java
-public boolean add(E e) {
-    final ReentrantLock lock = this.lock;
-    lock.lock();
-    try {
-        //得到旧数组
-        Object[] elements = getArray();
-        int len = elements.length;
-        //复制新数组
-        Object[] newElements = Arrays.copyOf(elements, len + 1);
-        //设置新元素
-        newElements[len] = e;
-        //设置新数组
-        setArray(newElements);
-        return true;
-    } finally {
-        lock.unlock();
-    }
-}
-```
-
-## Set
-
-跟List类似，`HashSet`和`TreeSet`都不是线程安全的，与之对应的有`CopyOnWriteSet`这个线程安全类。这个类底层维护了一个`CopyOnWriteArrayList`数组。
-
-```java
-private final CopyOnWriteArrayList<E> al;
-public CopyOnWriteArraySet() {
-    al = new CopyOnWriteArrayList<E>();
-}
-```
-
-### HashSet和HashMap
-
-`HashSet`底层是用`HashMap`实现的。既然是用`HashMap`实现的，那`HashMap.put()`需要传**两个参数**，而`HashSet.add()`只**传一个参数**，这是为什么？实际上`HashSet.add()`就是调用的`HashMap.put()`，只不过**Value**被写死了，是一个`private static final Object`对象。
-
-## Map
-
-`HashMap`不是线程安全的，`Hashtable`是线程安全的，但是跟`Vector`类似，太重量级。所以也有类似CopyOnWriteMap，只不过叫`ConcurrentHashMap`。
-
-关于集合不安全类请看[ContainerNotSafeDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/ContainerNotSafeDemo.java)。
-
-# Java锁
-
-## 公平锁/非公平锁
-
-**概念**：所谓**公平锁**，就是多个线程按照**申请锁的顺序**来获取锁，类似排队，先到先得。而**非公平锁**，则是多个线程抢夺锁，会导致**优先级反转**或**饥饿现象**。
-
-**区别**：公平锁在获取锁时先查看此锁维护的**等待队列**，**为空**或者当前线程是等待队列的**队首**，则直接占有锁，否则插入到等待队列，FIFO原则。非公平锁比较粗鲁，上来直接**先尝试占有锁**，失败则采用公平锁方式。非公平锁的优点是**吞吐量**比公平锁更大。
-
-`synchronized`和`juc.ReentrantLock`默认都是**非公平锁**。`ReentrantLock`在构造的时候传入`true`则是**公平锁**。
-
-## 可重入锁/递归锁
-
-可重入锁又叫递归锁，指的同一个线程在**外层方法**获得锁时，进入**内层方法**会自动获取锁。也就是说，线程可以进入任何一个它已经拥有锁的代码块。比如`get`方法里面有`set`方法，两个方法都有同一把锁，得到了`get`的锁，就自动得到了`set`的锁。
-
-就像有了家门的锁，厕所、书房、厨房就为你敞开了一样。可重入锁可以**避免死锁**的问题。
-
-详见[ReentrantLockDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/ReentrantLockDemo.java)。
-
-### 锁的配对
-
-锁之间要配对，加了几把锁，最后就得解开几把锁，下面的代码编译和运行都没有任何问题。但锁的数量不匹配会导致死循环。
-
-```java
-lock.lock();
-lock.lock();
-try{
-    someAction();
-}finally{
-    lock.unlock();
-}
-```
-
-## 自旋锁
-
-所谓自旋锁，就是尝试获取锁的线程不会**立即阻塞**，而是采用**循环的方式去尝试获取**。自己在那儿一直循环获取，就像“**自旋**”一样。这样的好处是减少**线程切换的上下文开销**，缺点是会**消耗CPU**。CAS底层的`getAndAddInt`就是**自旋锁**思想。
-
-```java
-//跟CAS类似，一直循环比较。
-while (!atomicReference.compareAndSet(null, thread)) { }
-```
-
-详见[SpinLockDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/SpinLockDemo.java)。
-
-## 读写锁/独占/共享锁
-
-**读锁**是**共享的**，**写锁**是**独占的**。`juc.ReentrantLock`和`synchronized`都是**独占锁**，独占锁就是**一个锁**只能被**一个线程**所持有。有的时候，需要**读写分离**，那么就要引入读写锁，即`juc.ReentrantReadWriteLock`。
-
-比如缓存，就需要读写锁来控制。缓存就是一个键值对，以下Demo模拟了缓存的读写操作，读的`get`方法使用了`ReentrantReadWriteLock.ReadLock()`，写的`put`方法使用了`ReentrantReadWriteLock.WriteLock()`。这样避免了写被打断，实现了多个线程同时读。
-
-[ReadWriteLockDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/ReadWriteLockDemo.java)
-
-## Synchronized和Lock的区别
-
-`synchronized`关键字和`java.util.concurrent.locks.Lock`都能加锁，两者有什么区别呢？
-
-1. **原始构成**：`sync`是JVM层面的，底层通过`monitorenter`和`monitorexit`来实现的。`Lock`是JDK API层面的。（`sync`一个enter会有两个exit，一个是正常退出，一个是异常退出）
-2. **使用方法**：`sync`不需要手动释放锁，而`Lock`需要手动释放。
-3. **是否可中断**：`sync`不可中断，除非抛出异常或者正常运行完成。`Lock`是可中断的，通过调用`interrupt()`方法。
-4. **是否为公平锁**：`sync`只能是非公平锁，而`Lock`既能是公平锁，又能是非公平锁。
-5. **绑定多个条件**：`sync`不能，只能随机唤醒。而`Lock`可以通过`Condition`来绑定多个条件，精确唤醒。
-
-# CountDownLatch/CyclicBarrier/Semaphore
-
-## CountDownLatch
-
-`CountDownLatch`内部维护了一个**计数器**，只有当**计数器==0**时，某些线程才会停止阻塞，开始执行。
-
-`CountDownLatch`主要有两个方法，`countDown()`来让计数器-1，`await()`来让线程阻塞。当`count==0`时，阻塞线程自动唤醒。
-
-**案例一班长关门**：main线程是班长，6个线程是学生。只有6个线程运行完毕，都离开教室后，main线程班长才会关教室门。
-
-**案例二秦灭六国**：只有6国都被灭亡后（执行完毕），main线程才会显示“秦国一统天下”。
-
-### 枚举类的使用
-
-在**案例二**中会使用到枚举类，因为灭六国，循环6次，想根据`i`的值来确定输出什么国，比如1代表楚国，2代表赵国。如果用判断则十分繁杂，而枚举类可以简化操作。
-
-枚举类就像一个**简化的数据库**，枚举类名就像数据库名，枚举的项目就像数据表，枚举的属性就像表的字段。
-
-关于`CountDownLatch`和枚举类的使用，请看[CountDownLatchDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/CountDownLatchDemo.java)。
-
-## CyclicBarrier
-
-`CountDownLatch`是减，而`CyclicBarrier`是加，理解了`CountDownLatch`，`CyclicBarrier`就很容易。比如召集7颗龙珠才能召唤神龙，详见[CyclicBarrierDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/CyclicBarrierDemo.java)。
-
-## Semaphore
-
-`CountDownLatch`的问题是**不能复用**。比如`count=3`，那么加到3，就不能继续操作了。而`Semaphore`可以解决这个问题，比如6辆车3个停车位，对于`CountDownLatch`**只能停3辆车**，而`Semaphore`可以停6辆车，车位空出来后，其它车可以占有，这就涉及到了`Semaphore.accquire()`和`Semaphore.release()`方法。
-
-```java
-Semaphore semaphore=new Semaphore(3);
-for (int i = 1; i <=6 ; i++) {
-    new Thread(()->{
-        try {
-            //占有资源
-            semaphore.acquire();
-            System.out.println(Thread.currentThread().getName()+"\t抢到车位");
-            try{ TimeUnit.SECONDS.sleep(3);} catch (Exception e){e.printStackTrace(); }
-	    System.out.println(Thread.currentThread().getName()+"\t停车3秒后离开车位");
-	    } 
-	    catch (InterruptedException e) {e.printStackTrace();} 
-	    //释放资源
-	    finally {semaphore.release();}
-    },String.valueOf(i)).start();
-}
-```
-
-# 阻塞队列
-
-**概念**：当阻塞队列为空时，获取（take）操作是阻塞的；当阻塞队列为满时，添加（put）操作是阻塞的。
-
-![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/BlockingQueue.png)
-
-**好处**：阻塞队列不用手动控制什么时候该被阻塞，什么时候该被唤醒，简化了操作。
-
-**体系**：`Collection`→`Queue`→`BlockingQueue`→七个阻塞队列实现类。
-
-| 类名                    | 作用                             |
-| ----------------------- | -------------------------------- |
-| **ArrayBlockingQueue**  | 由**数组**构成的**有界**阻塞队列 |
-| **LinkedBlockingQueue** | 由**链表**构成的**有界**阻塞队列 |
-| PriorityBlockingQueue   | 支持优先级排序的无界阻塞队列     |
-| DelayQueue              | 支持优先级的延迟无界阻塞队列     |
-| **SynchronousQueue**    | 单个元素的阻塞队列               |
-| LinkedTransferQueue     | 由链表构成的无界阻塞队列         |
-| LinkedBlockingDeque     | 由链表构成的双向阻塞队列         |
-
-粗体标记的三个用得比较多，许多消息中间件底层就是用它们实现的。
-
-需要注意的是`LinkedBlockingQueue`虽然是有界的，但有个巨坑，其默认大小是`Integer.MAX_VALUE`，高达21亿，一般情况下内存早爆了（在线程池的`ThreadPoolExecutor`有体现）。
-
-**API**：抛出异常是指当队列满时，再次插入会抛出异常；返回布尔是指当队列满时，再次插入会返回false；阻塞是指当队列满时，再次插入会被阻塞，直到队列取出一个元素，才能插入。超时是指当一个时限过后，才会插入或者取出。API使用见[BlockingQueueDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/BlockingQueueDemo.java)。
-
-| 方法类型 | 抛出异常  | 返回布尔   | 阻塞     | 超时                     |
-| -------- | --------- | ---------- | -------- | ------------------------ |
-| 插入     | add(E e)  | offer(E e) | put(E e) | offer(E e,Time,TimeUnit) |
-| 取出     | remove()  | poll()     | take()   | poll(Time,TimeUnit)      |
-| 队首     | element() | peek()     | 无       | 无                       |
-
-## SynchronousQueue
-
-队列只有一个元素，如果想插入多个，必须等队列元素取出后，才能插入，只能有一个“坑位”，用一个插一个，详见[SynchronousQueueDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/SynchronousQueueDemo.java)。
-
-# Callable接口
-
-**与Runnable的区别**：
-
-1. Callable带返回值。
-2. 会抛出异常。
-3. 覆写`call()`方法，而不是`run()`方法。
-
-**Callable接口的使用**：
-
-```java
-public class CallableDemo {
-    //实现Callable接口
-    class MyThread implements Callable<Integer> {
-        @Override
-        public Integer call() throws Exception {
-            System.out.println("callable come in ...");
-            return 1024;
-        }
-    }
-    
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        //创建FutureTask类，接受MyThread。    
-        FutureTask<Integer> futureTask = new FutureTask<>(new MyThread());
-        //将FutureTask对象放到Thread类的构造器里面。
-        new Thread(futureTask, "AA").start();
-        int result01 = 100;
-        //用FutureTask的get方法得到返回值。
-        int result02 = futureTask.get();
-        System.out.println("result=" + (result01 + result02));
-    }
-}
-```
-
-# 阻塞队列的应用——生产者消费者
-
-## 传统模式
-
-传统模式使用`Lock`来进行操作，需要手动加锁、解锁。详见[ProdConsTradiDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/ProdConsTradiDemo.java)。
-
-```java
-public void increment() throws InterruptedException {
-    lock.lock();
-    try {
-        //1 判断 如果number=1，那么就等待，停止生产
-        while (number != 0) {
-            //等待，不能生产
-            condition.await();
-    	}
-	//2 干活 否则，进行生产
-	number++;
-        System.out.println(Thread.currentThread().getName() + "\t" + number);
-	//3 通知唤醒 然后唤醒消费线程
-	condition.signalAll();
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        //最后解锁
-        lock.unlock();
-    }
-}
-```
-
-## 阻塞队列模式
-
-使用阻塞队列就不需要手动加锁了，详见[ProdConsBlockQueueDemo](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/src/thread/ProdConsBlockQueueDemo.java)。
-
-```java
-public void myProd() throws Exception {
-    String data = null;
-    boolean retValue;
-    while (FLAG) {
-        data = atomicInteger.incrementAndGet() + "";//++i
-        retValue = blockingQueue.offer(data, 2L, TimeUnit.SECONDS);
-        if (retValue) {
-            System.out.println(Thread.currentThread().getName() + "\t" + "插入队列" + data + "成功");
-        } else {
-            ystem.out.println(Thread.currentThread().getName() + "\t" + "插入队列" + data + "失败");
-        }
-        TimeUnit.SECONDS.sleep(1);
-    }
-    System.out.println(Thread.currentThread().getName() + "\tFLAG==false，停止生产");
-}
-```
-
-# 阻塞队列的应用——线程池
-
-## 线程池基本概念
-
-**概念**：线程池主要是控制运行线程的数量，将待处理任务放到等待队列，然后创建线程执行这些任务。如果超过了最大线程数，则等待。
-
-**优点**：
-
-1. 线程复用：不用一直new新线程，重复利用已经创建的线程来降低线程的创建和销毁开销，节省系统资源。
-2. 提高响应速度：当任务达到时，不用创建新的线程，直接利用线程池的线程。
-3. 管理线程：可以控制最大并发数，控制线程的创建等。
-
-**体系**：`Executor`→`ExecutorService`→`AbstractExecutorService`→`ThreadPoolExecutor`。`ThreadPoolExecutor`是线程池创建的核心类。类似`Arrays`、`Collections`工具类，`Executor`也有自己的工具类`Executors`。
-
-## 线程池三种常用创建方式
-
-**newFixedThreadPool**：使用`LinkedBlockingQueue`实现，定长线程池。
-
-```java
-public static ExecutorService newFixedThreadPool(int nThreads) {
-    return new ThreadPoolExecutor(nThreads, nThreads,
-                                  0L, TimeUnit.MILLISECONDS,
-                                  new LinkedBlockingQueue<Runnable>());
-}
-```
-
-**newSingleThreadExecutor**：使用`LinkedBlockingQueue`实现，一池只有一个线程。
-
-```java
-public static ExecutorService newSingleThreadExecutor() {
-    return new FinalizableDelegatedExecutorService(new ThreadPoolExecutor(1, 1,
-                                    0L, TimeUnit.MILLISECONDS,
-                                    new LinkedBlockingQueue<Runnable>()));
-}
-```
-
-**newCachedThreadPool**：使用`SynchronousQueue`实现，变长线程池。
-
-```java
-public static ExecutorService newCachedThreadPool() {
-    return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                                 60L, TimeUnit.SECONDS,
-                                 new SynchronousQueue<Runnable>());
-}
-```
-
-## 线程池创建的七个参数
-
-| 参数            | 意义                       |
-| --------------- | -------------------------- |
-| corePoolSize    | 线程池常驻核心线程数       |
-| maximumPoolSize | 能够容纳的最大线程数       |
-| keepAliveTime   | 空闲线程存活时间           |
-| unit            | 存活时间单位               |
-| workQueue       | 存放提交但未执行任务的队列 |
-| threadFactory   | 创建线程的工厂类           |
-| handler         | 等待队列满后的拒绝策略     |
-
-**理解**：线程池的创建参数，就像一个**银行**。
-
-`corePoolSize`就像银行的“**当值窗口**“，比如今天有**2位柜员**在受理**客户请求**（任务）。如果超过2个客户，那么新的客户就会在**等候区**（等待队列`workQueue`）等待。当**等候区**也满了，这个时候就要开启“**加班窗口**”，让其它3位柜员来加班，此时达到**最大窗口**`maximumPoolSize`，为5个。如果开启了所有窗口，等候区依然满员，此时就应该启动”**拒绝策略**“`handler`，告诉不断涌入的客户，叫他们不要进入，已经爆满了。由于不再涌入新客户，办完事的客户增多，窗口开始空闲，这个时候就通过`keepAlivetTime`将多余的3个”加班窗口“取消，恢复到2个”当值窗口“。
-
-## 线程池底层原理
-
-**原理图**：上面银行的例子，实际上就是线程池的工作原理。
-
-![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/threadPool.png)
-
-**流程图**：
-
-![](https://raw.githubusercontent.com/MaJesTySA/JVM-JUC-Core/master/imgs/threadPoolProcedure.png)
-
-新任务到达→
-
-如果正在运行的线程数小于`corePoolSize`，创建核心线程；大于等于`corePoolSize`，放入等待队列。
-
-如果等待队列已满，但正在运行的线程数小于`maximumPoolSize`，创建非核心线程；大于等于`maximumPoolSize`，启动拒绝策略。
-
-当一个线程无事可做一段时间`keepAliveTime`后，如果正在运行的线程数大于`corePoolSize`，则关闭非核心线程。
-
-## 线程池的拒绝策略
-
-当等待队列满时，且达到最大线程数，再有新任务到来，就需要启动拒绝策略。JDK提供了四种拒绝策略，分别是。
-
-1. **AbortPolicy**：默认的策略，直接抛出`RejectedExecutionException`异常，阻止系统正常运行。
-2. **CallerRunsPolicy**：既不会抛出异常，也不会终止任务，而是将任务返回给调用者。
-3. **DiscardOldestPolicy**：抛弃队列中等待最久的任务，然后把当前任务加入队列中尝试再次提交任务。
-4. **DiscardPolicy**：直接丢弃任务，不做任何处理。
-
-## 实际生产使用哪一个线程池？
-
-**单一、可变、定长都不用**！原因就是`FixedThreadPool`和`SingleThreadExecutor`底层都是用`LinkedBlockingQueue`实现的，这个队列最大长度为`Integer.MAX_VALUE`，显然会导致OOM。所以实际生产一般自己通过`ThreadPoolExecutor`的7个参数，自定义线程池。
-
-```java
-ExecutorService threadPool=new ThreadPoolExecutor(2,5,
-                        1L,TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<>(3),
-                        Executors.defaultThreadFactory(),
-                        new ThreadPoolExecutor.AbortPolicy());
-```
-
-### 自定义线程池参数选择
-
-对于CPU密集型任务，最大线程数是CPU线程数+1。对于IO密集型任务，尽量多配点，可以是CPU线程数*2，或者CPU线程数/(1-阻塞系数)。
-
-# 死锁编码和定位
-
-主要是两个命令配合起来使用，定位死锁。
-
-**jps**指令：`jps -l`可以查看运行的Java进程。
-
-```java
-9688 thread.DeadLockDemo
-12177 sun.tools.jps.Jps
-```
-
-**jstack**指令：`jstack pid`可以查看某个Java进程的堆栈信息，同时分析出死锁。
-
-```java
-"Thread AAA":
-	at xxxxx
-	- waiting to lock <0x000111>
-	- locked <0x000222>
-	at java.lang.Thread.run
-"Thread BBB":
-	at xxxxx
-	- waiting to lock <0x000222>
-	- locked <0x000111>
-	at java.lang.Thread.run
-Found 1 deadlock.
-```
-
+JVM内存映像工具。
