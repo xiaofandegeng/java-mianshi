@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d72f60b-4a7e-4cf1-8520-520580fb617e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JVM.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +36,9 @@
     <property name="settings.editor.selected.configurable" value="Lombok plugin" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\daima\java\java-mianshi" />
+    </key>
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.ning4256.countDownLatch" />
     </key>
@@ -126,7 +130,7 @@
       <option name="presentableId" value="Default" />
       <updated>1597755403077</updated>
       <workItem from="1597755405267" duration="2774000" />
-      <workItem from="1597844059990" duration="1557000" />
+      <workItem from="1597844059990" duration="1741000" />
     </task>
     <servers />
   </component>
