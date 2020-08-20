@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d72f60b-4a7e-4cf1-8520-520580fb617e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/com/ning4256/consumer/TraditionalConsumer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/ning4256/blockingQueue/LockConditions.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,13 +42,13 @@
       <recent name="com.ning4256.countDownLatch" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TraditionalConsumer">
-    <configuration name="CountLatchDownDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.ning4256.countDownLatch.CountLatchDownDemo" />
+  <component name="RunManager" selected="Application.LockConditions">
+    <configuration name="CyclicBarrierDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.ning4256.cyclicBarrier.CyclicBarrierDemo" />
       <module name="java-mianshi" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.ning4256.countDownLatch.*" />
+          <option name="PATTERN" value="com.ning4256.cyclicBarrier.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -56,12 +56,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="CyclicBarrierDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.ning4256.cyclicBarrier.CyclicBarrierDemo" />
+    <configuration name="LockConditions" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.ning4256.blockingQueue.LockConditions" />
       <module name="java-mianshi" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.ning4256.cyclicBarrier.*" />
+          <option name="PATTERN" value="com.ning4256.blockingQueue.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -110,11 +110,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.LockConditions" />
         <item itemvalue="Application.TraditionalConsumer" />
         <item itemvalue="Application.SynchronousDemo" />
         <item itemvalue="Application.SemaphoreDemo" />
         <item itemvalue="Application.CyclicBarrierDemo" />
-        <item itemvalue="Application.CountLatchDownDemo" />
       </list>
     </recent_temporary>
   </component>
@@ -130,6 +130,7 @@
       <updated>1597755403077</updated>
       <workItem from="1597755405267" duration="2774000" />
       <workItem from="1597844059990" duration="3852000" />
+      <workItem from="1597931318290" duration="1051000" />
     </task>
     <servers />
   </component>
@@ -141,22 +142,22 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="574" y="113" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1597757994948" />
-    <state width="1493" height="181" key="GridCell.Tab.0.bottom" timestamp="1597848710839">
+    <state width="1493" height="186" key="GridCell.Tab.0.bottom" timestamp="1597932350918">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="181" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1597848710839" />
-    <state width="1493" height="181" key="GridCell.Tab.0.center" timestamp="1597848710839">
+    <state width="1493" height="186" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1597932350918" />
+    <state width="1493" height="186" key="GridCell.Tab.0.center" timestamp="1597932350918">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="181" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1597848710839" />
-    <state width="1493" height="181" key="GridCell.Tab.0.left" timestamp="1597848710839">
+    <state width="1493" height="186" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1597932350918" />
+    <state width="1493" height="186" key="GridCell.Tab.0.left" timestamp="1597932350918">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="181" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1597848710839" />
-    <state width="1493" height="181" key="GridCell.Tab.0.right" timestamp="1597848710839">
+    <state width="1493" height="186" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1597932350918" />
+    <state width="1493" height="186" key="GridCell.Tab.0.right" timestamp="1597932350918">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="181" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1597848710839" />
+    <state width="1493" height="186" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1597932350918" />
     <state x="270" y="56" key="SettingsEditor" timestamp="1597757961662">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
