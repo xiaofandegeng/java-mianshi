@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d72f60b-4a7e-4cf1-8520-520580fb617e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/com/ning4256/threadPool/MyThreadPoolDemo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/ning4256/deadLock/MyDeadLockDemo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +42,7 @@
       <recent name="com.ning4256.countDownLatch" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.MyThreadPoolDemo">
+  <component name="RunManager" selected="Application.MyDeadLockDemo">
     <configuration name="BlockingQueueConsumer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.ning4256.blockingQueue.BlockingQueueConsumer" />
       <module name="java-mianshi" />
@@ -56,12 +56,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="LockConditions" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.ning4256.blockingQueue.LockConditions" />
+    <configuration name="MyDeadLockDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.ning4256.deadLock.MyDeadLockDemo" />
       <module name="java-mianshi" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.ning4256.blockingQueue.*" />
+          <option name="PATTERN" value="com.ning4256.deadLock.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -110,11 +110,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.MyDeadLockDemo" />
         <item itemvalue="Application.MyThreadPoolDemo" />
         <item itemvalue="Application.T1" />
         <item itemvalue="Application.ThreadPoolDemo" />
         <item itemvalue="Application.BlockingQueueConsumer" />
-        <item itemvalue="Application.LockConditions" />
       </list>
     </recent_temporary>
   </component>
@@ -131,7 +131,8 @@
       <workItem from="1597755405267" duration="2774000" />
       <workItem from="1597844059990" duration="3852000" />
       <workItem from="1597931318290" duration="4046000" />
-      <workItem from="1598271158232" duration="5326000" />
+      <workItem from="1598271158232" duration="6001000" />
+      <workItem from="1598353513091" duration="1649000" />
     </task>
     <servers />
   </component>
@@ -139,26 +140,26 @@
     <option name="version" value="2" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="574" y="113" key="#com.intellij.ide.util.MemberChooser" timestamp="1597934310722">
+    <state x="574" y="113" key="#com.intellij.ide.util.MemberChooser" timestamp="1598354433821">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="574" y="113" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1597934310722" />
-    <state width="1493" height="248" key="GridCell.Tab.0.bottom" timestamp="1598280084317">
+    <state x="574" y="113" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1598354433821" />
+    <state width="1493" height="248" key="GridCell.Tab.0.bottom" timestamp="1598280163301">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="248" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1598280084317" />
-    <state width="1493" height="248" key="GridCell.Tab.0.center" timestamp="1598280084317">
+    <state width="1493" height="248" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1598280163301" />
+    <state width="1493" height="248" key="GridCell.Tab.0.center" timestamp="1598280163301">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="248" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1598280084317" />
-    <state width="1493" height="248" key="GridCell.Tab.0.left" timestamp="1598280084317">
+    <state width="1493" height="248" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1598280163301" />
+    <state width="1493" height="248" key="GridCell.Tab.0.left" timestamp="1598280163301">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="248" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1598280084317" />
-    <state width="1493" height="248" key="GridCell.Tab.0.right" timestamp="1598280084317">
+    <state width="1493" height="248" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1598280163301" />
+    <state width="1493" height="248" key="GridCell.Tab.0.right" timestamp="1598280163301">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="248" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1598280084317" />
+    <state width="1493" height="248" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1598280163301" />
     <state x="270" y="56" key="SettingsEditor" timestamp="1598277791776">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
